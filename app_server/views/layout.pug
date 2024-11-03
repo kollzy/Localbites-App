@@ -1,0 +1,49 @@
+doctype html
+html
+  head
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    title= title
+    link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
+    link(rel='stylesheet', href='/stylesheets/font-awesome.min.css')
+    link(rel='stylesheet', href='/stylesheets/style.css')
+  body
+    nav.navbar.fixed-top.navbar-toggleable-md.navbar-inverse
+      .container
+        button.navbar-toggler.navbar-toggler-right(type='button', data-toggle='collapse', data-target='#navbarMain')
+          span.navbar-toggler-icon
+        a.navbar-brand(href='/') LocalBites
+        #navbarMain.navbar-collapse.collapse
+          ul.navbar-nav.mr-auto
+            li.nav-item
+              a.nav-link(href='/about') About
+            if !user
+              li.nav-item
+                a.nav-link(href='/register') Register
+              li.nav-item
+                a.nav-link(href='/login') Login
+            else
+              li.nav-item
+                a.nav-link(href='/profile') Welcome, #{user.username} 
+              li.nav-item
+                a.nav-link(href='/auth/logout') Logout
+            li.nav-item
+              a.nav-link(href='/search') Search
+
+    .container
+      if message
+        .alert.alert-info.alert-dismissible(role='alert')
+          button.close(type='button', data-dismiss='alert', aria-label='Close')
+            span(aria-hidden='true') &times;
+          | #{message}
+
+      block content
+      
+    footer
+      .row
+        .col-12
+          small &copy; LocalBites 
+
+   
+    script(src='https://code.jquery.com/jquery-3.1.1.slim.min.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js')
+    script(src='/javascripts/bootstrap.min.js')
