@@ -1,21 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const ctrlLocations = require('../controllers/locations');
-const ctrlOthers = require('../controllers/others');
-const ctrlAuth = require('../controllers/auth'); 
+const locationsController = require('../controllers/locations'); // Adjust path if needed
+const authRouter = require('./auth'); // Assuming `auth.js` exists for login/register routes
 
+// Homepage route
+router.get('/', locationsController.homelist); // Displays location list on homepage
 
-router.get('/', ctrlLocations.homelist);
-router.get('/location', ctrlLocations.locationInfo);
-router.get('/location/review/new', ctrlLocations.addReview);
+// Individual location route (if applicable)
+router.get('/location/:id', locationsController.locationInfo); 
 
-
-router.get('/about', ctrlOthers.about);
-
-
-router.get('/login', ctrlAuth.renderLogin); // Route for login page
-router.post('/login', ctrlAuth.handleLogin); // Route for login form submission
-router.get('/register', ctrlAuth.renderRegister); // Route for registration page
-router.post('/register', ctrlAuth.handleRegister); // Route for registration form submission
+// Routes for login and register
+router.use('/auth', authRouter);
 
 module.exports = router;

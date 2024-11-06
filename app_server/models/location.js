@@ -17,7 +17,7 @@ const openingTimeSchema = new mongoose.Schema({
 
 
 const reviewSchema = new mongoose.Schema({
-  author: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, // Link to the User model
+  author: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   rating: {
     type: Number,
     required: true,

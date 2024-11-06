@@ -1,28 +1,22 @@
 extends layout
 
 block content
-  .row.banner
-    .col-12
-      h1= pageHeader.title
-      small &nbsp;#{pageHeader.strapline}
+  .container
+    h1= title
+    p.page-header= pageHeader.strapline
 
-  .row
-    .col-12.col-md-8
-      .row 
-        each location in locations
-          .col-12.col-md-6.col-lg-4 
-            .card
-              .card-body
-                h4.card-title
-                  a(href="/location")= location.name 
-                  small &nbsp;
-                  // Dynamic star rating
-                  each star in (Array(location.rating).fill(0))
-                    i.fa.fa-star
-                  each star in (Array(5 - location.rating).fill(0))
-                    i.fa.fa-star-o
-                span.badge.badge-pill.badge-default.float-right= location.distance
-                p.address= location.address
-                .facilities
-                  each facility in location.facilities
-                    span.badge.badge-warning= facility
+    .row
+      each location in locations
+        .col-md-4
+          .card.mb-4
+            .card-body
+              h5.card-title= location.name
+              p.card-text
+                | #{location.address}
+                br
+                | Rating: #{location.rating} stars
+                br
+                | Facilities: #{location.facilities.join(', ')}
+                br
+                | Distance: #{location.distance}
+              a.btn.btn-primary(href=`/locations/${location.name}`) View Details
