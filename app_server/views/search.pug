@@ -1,1 +1,32 @@
-extends layout
+extends layout.pug
+
+block content
+  h1 Search for a Restaurant
+
+  form(action='/locations/search', method='POST')
+    .form-group
+      label(for='query') Restaurant Name
+      input(type='text', class='form-control', id='query', name='query', placeholder='e.g., McDonalds')
+    .form-group
+      label(for='location') Location 
+      input(type='text', class='form-control', id='location', name='location', placeholder='e.g., Ireland')
+    button(type='submit', class='btn btn-primary') Search
+
+  if errorMessage
+    .alert.alert-danger
+      p= errorMessage
+  else if places.length > 0
+    .locations-list
+      each place in places
+        .card.mb-4
+          .card-body
+            h5.card-title= place.name
+            p.card-text= place.vicinity
+            p Rating: #{place.rating || 'No rating available'}
+            p Opening Hours: #{place.openingHours || 'No data'}
+            p Reviews: #{place.reviews || 0}
+
+            // Button to view more details
+            a(href='/locations/restaurant/' + place.id, class='btn btn-primary') View Details
+  else
+    p No results found for your search.

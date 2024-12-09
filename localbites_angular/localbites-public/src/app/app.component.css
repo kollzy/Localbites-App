@@ -1,0 +1,13 @@
+/* app.component.css */
+.card {
+    border: 1px solid #f42020;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  .card-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+  }
+  .card-text {
+    font-size: 0.95rem;
+  }
+  

@@ -1,106 +1,100 @@
-// controllers/auth.js
+const User = require('../../app_api/models/users');
 
-const User = require('../models/users');
-const bcrypt = require('bcrypt');
-const passport = require('passport');
-
-// Registration form rendering
+// Render registration form
 const registerForm = (req, res) => {
     res.render('register');
 };
 
+// Process registration
 const processRegister = async (req, res) => {
-  const { username, email, password } = req.body;
+    const { username, email, password } = req.body;
 
-  try {
-      // Check if the email already exists in the database
-      const existingUser = await User.findOne({ email });
-      if (existingUser) {
-          return res.status(400).render('register', {
-              message: 'Email is already registered.'
-          });
-      }
+    try {
+        // Check if email already exists
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).render('register', {
+                message: 'Email is already registered.'
+            });
+        }
 
-      // Create a new user instance and save it to the database
-      const newUser = new User({
-          username,
-          email,
-          password
-      });
+        // Create and save the new user
+        const newUser = new User({ username, email, password });
+        await newUser.save();
 
-      // Log the data to check if everything is correct
-      console.log('New User:', newUser);
+        // Save user to session
+        req.session.user = { id: newUser._id, username: newUser.username };
 
-      // Save the new user
-      await newUser.save();
-
-      // Redirect to login page after successful registration
-      return res.redirect('/auth/login');
-  } catch (error) {
-      console.error('Error during registration:', error);
-      return res.status(500).render('register', {
-          message: 'There was an error with the registration process.'
-      });
-  }
+        // Redirect to the welcome page
+        return res.redirect('/auth/welcome');
+    } catch (error) {
+        console.error('Error during registration:', error);
+        res.status(500).render('register', {
+            message: 'There was an error with the registration process.'
+        });
+    }
 };
 
-// Login form rendering
+// Render login form
 const loginForm = (req, res) => {
     res.render('login');
 };
 
 // Process login
-const processLogin = async (req, res, next) => {
+const processLogin = async (req, res) => {
     const { username, password } = req.body;
 
+    // Check if fields are empty
+    if (!username || !password) {
+        return res.status(400).render('login', { message: 'Please provide both username and password' });
+    }
+
     try {
-        // Find the user by username
+        // Find user by username
         const user = await User.findOne({ username });
-        if (!user) {
-            return res.status(400).render('login', {
-                message: 'Username or password is incorrect.'
-            });
+        if (!user || user.password !== password) {
+            return res.status(400).render('login', { message: 'Invalid username or password' });
         }
 
-        // Compare the entered password with the hashed password in the DB
-        const match = await bcrypt.compare(password, user.password);
-        if (!match) {
-            return res.status(400).render('login', {
-                message: 'Username or password is incorrect.'
-            });
-        }
+        // Save user to session
+        req.session.user = { id: user._id, username: user.username };
 
-        // If passwords match, set up a session (or use passport for session management)
-        req.session.user = user;
+        // Redirect to welcome page
         return res.redirect('/auth/welcome');
     } catch (error) {
-        console.error('Error during login:', error);
-        return res.status(500).render('login', {
-            message: 'There was an error with the login process.'
-        });
+        console.error('Login error:', error);
+        res.status(500).render('login', { message: 'An error occurred during login. Please try again.' });
     }
+    console.log('Login request body:', req.body);
+
 };
 
-// Display the welcome page after login
+
+// Render welcome page
 const welcomePage = (req, res) => {
     if (!req.session.user) {
         return res.redirect('/auth/login');
     }
-    res.render('welcome', { user: req.session.user });
-};
 
-// Logout the user
-const logout = (req, res) => {
-    req.session.destroy((err) => {
-        if (err) {
-            console.error('Logout error:', err);
-            return res.status(500).send('Error during logout.');
-        }
-        res.redirect('/auth/login');
+    const { username } = req.session.user;
+
+    res.render('welcome', {
+        title: 'Welcome to LocalBites',
+        username
     });
 };
 
-// Export the controller functions
+// Logout user
+const logout = (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            console.error('Error during logout:', err);
+            return res.status(500).send('Error during logout.');
+        }
+        res.redirect('/');
+    });
+};
+
 module.exports = {
     registerForm,
     processRegister,

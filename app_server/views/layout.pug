@@ -7,9 +7,10 @@ html
     link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
     link(rel='stylesheet', href='/stylesheets/font-awesome.min.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
-    script(src='https://code.jquery.com/jquery-3.1.1.slim.min.js')
-    script(src='https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js')
-    script(src='/javascripts/bootstrap.min.js')
+    
+    // Include Google Maps API
+    script(src="https://maps.googleapis.com/maps/api/js?key=#{process.env.GOOGLE_MAPS_API_KEY}&callback=initMap&libraries=&v=weekly", async, defer)
+
   body
     nav.navbar.fixed-top.navbar-toggleable-md.navbar-inverse
       .container
@@ -19,13 +20,20 @@ html
         #navbarMain.navbar-collapse.collapse
           ul.navbar-nav.mr-auto
             li.nav-item
-              a.nav-link(href='/auth/about') About
-            li.nav-item
               a.nav-link(href='/auth/register') Register
             li.nav-item
-              a.nav-link(href='/auth/login') Login
-            li.nav-item
-              a.nav-link(href='/auth/search') Search
+              a.nav-link(href='/locations/search') Search
+            if !user
+              li.nav-item
+                a.nav-link(href='/auth/login') Login
+            else
+              li.nav-item
+                a.nav-link(href='/auth/logout') Logout
+          ul.navbar-nav.ml-auto
+            if user
+              li.nav-item
+                span.nav-link Logged in as 
+                span.text-primary #{user.username}
     .container
       if message
         .alert.alert-info.alert-dismissible(role='alert')
@@ -37,3 +45,4 @@ html
       .row
         .col-12
           small &copy; LocalBites 2024
+    script(src='/javascripts/map.js') 

@@ -1,22 +1,22 @@
 extends layout
 
 block content
-  .container
-    h1= title
-    p.page-header= pageHeader.strapline
+  .banner
+    h1 Welcome to LocalBites!
+    p Find your favorite restaurant.
 
-    .row
-      each location in locations
-        .col-md-4
-          .card.mb-4
-            .card-body
-              h5.card-title= location.name
-              p.card-text
-                | #{location.address}
-                br
-                | Rating: #{location.rating} stars
-                br
-                | Facilities: #{location.facilities.join(', ')}
-                br
-                | Distance: #{location.distance}
-              a.btn.btn-primary(href=`/locations/${location.name}`) View Details
+  .row
+    each location in locations
+      .col-md-6
+        .card.card-primary
+          .card-body
+            h4 #{location.name}
+            p.address #{location.address}
+            if location.rating
+              p Rating: #{location.rating}
+            if location.reviews
+              p Reviews: #{location.reviews} reviews
+            else
+              p No reviews available.
+            // View Details Button
+            a.btn.btn-primary(href=`/locations/${location.id}`) View Details

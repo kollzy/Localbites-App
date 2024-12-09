@@ -1,5 +1,38 @@
+// views/index.pug
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  .row
+    .col-12
+      h1 Nearby Restaurants
+      .locations-list
+        // Locations will be dynamically added here
+
+  script.
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function(position) {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+
+        // Fetch nearby locations based on user's coordinates
+        fetch(`/locations/nearby?lat=${lat}&lon=${lon}`)
+          .then(response => response.json())
+          .then(data => {
+            const locationsList = document.querySelector('.locations-list');
+            data.forEach(location => {
+              const locationElement = document.createElement('div');
+              locationElement.innerHTML = `
+                <h3>${location.name}</h3>
+                <p>${location.address}</p>
+                <a href="/locations/${location._id}">View Details</a>
+              `;
+              locationsList.appendChild(locationElement);
+            });
+          })
+          .catch(error => {
+            console.error("Error fetching nearby locations:", error);
+          });
+      });
+    } else {
+      alert("Geolocation is not supported by this browser.");
+    }

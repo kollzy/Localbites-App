@@ -1,18 +1,16 @@
-extends layout
+extends layout 
 
 block content
-  .container
-    h1 Login
-    form(method='post', action='/auth/login')
-      .form-group
-        label(for='username') Username
-        input#username.form-control(type='text', name='username', required)
-      .form-group
-        label(for='password') Password
-        input#password.form-control(type='password', name='password', required)
-      button.btn.btn-primary(type='submit') Login
-    p
-      | Don't have an account? 
-      a(href='/auth/register') Register here
-    if message
-      .alert.alert-warning= message
+  .container.mt-5
+    .row.justify-content-center
+      .col-md-6
+        h2.text-center.mb-4 Login
+        form(action="/auth/login" method="POST")
+          .form-group
+            label(for="username") Username 
+            input#email.form-control(type="text" name="username" required)
+          .form-group
+            label(for="password") Password
+            input#password.form-control(type="password" name="password" required)
+
+          button.btn.btn-primary.btn-block(type="submit") Login

@@ -1,7 +1,9 @@
 extends layout
 
 block content
-  .container
-    h1 Welcome, #{user.username}!
-    p You have successfully logged in.
-    a(href='/auth/logout') Logout
+  .container.text-center
+    h1 Welcome, 
+      span(style="font-weight: bold;") #{username}!
+    p Welcome To LocalBites.
+    p Explore and enjoy our services!
+    a.btn.btn-primary(href='/auth/logout') Logout
